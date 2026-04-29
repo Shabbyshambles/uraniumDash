@@ -18,8 +18,9 @@ with tab1:
     st.title("☢️ Uranium Macro Dashboard")
 
     st.markdown("""
-Tracks uranium equities, ETF proxies, and structural supply-demand signals.1
-Designed for cycle + valuation analysis.
+Tracks uranium equities, ETF proxies, and structural supply-demand signals.
+            
+
 """)
 
 # -----------------------
