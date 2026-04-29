@@ -11,7 +11,7 @@ st.set_page_config(
     page_title="Uranium Macro Dashboard",
     layout="wide",
 )
-tab1, tab2 = st.tabs(["📊 Dashboard", "🔮 Price Model"])
+tab1, tab2 = st.tabs(["Dashboard", "Price Model"])
 
 with tab1:
     # your existing dashboard code
@@ -83,7 +83,7 @@ Designed for cycle + valuation analysis.
 # -----------------------
 # RELATIVE VALUE MATRIX
 # -----------------------
-    st.subheader("⚖️ Relative Value Snapshot")
+    st.subheader("Relative Value Snapshot")
 
     df_latest = pd.DataFrame({
         "Asset": list(tickers.keys()),
@@ -97,7 +97,7 @@ Designed for cycle + valuation analysis.
 
     st.dataframe(df_latest)
 
-    st.subheader("🧠 Uranium Structural Drivers (Core Model)")
+    st.subheader("Uranium Structural Drivers (Core Model)")
     col1, col2, col3 = st.columns(3)
 
     with col1:
@@ -130,7 +130,7 @@ Designed for cycle + valuation analysis.
     inventory_tightness = max(0, 3.5 - inventory_years)  # lower inventory = tighter market
     contract_pressure = contracting_lbs / reactor_demand
 
-    st.markdown("### 📊 Derived Metrics")
+    st.markdown("Derived Metrics")
 
     st.write(f"**Supply–Demand Gap:** {supply_demand_gap:.1f} million lbs")
     st.write(f"**Inventory Tightness Score:** {inventory_tightness:.2f}")
@@ -141,7 +141,7 @@ Designed for cycle + valuation analysis.
         (contract_pressure - 1)
 )
 
-    st.subheader("🔥 Uranium Tightness Index")
+    st.subheader("Uranium Tightness Index")
 
     st.metric(
         label="Cycle Tightness Score",
@@ -167,7 +167,7 @@ Designed for cycle + valuation analysis.
 # -----------------------
 # STRUCTURAL FRAMEWORK
 # -----------------------
-    st.subheader("🧠 Uranium Cycle Interpretation")
+    st.subheader("Uranium Cycle Interpretation")
 
     st.markdown("""
 ### 1. Supply Side (tightening driver)
@@ -189,7 +189,7 @@ When:
 - Volatility rises
 - Equities lead spot
 
-👉 That’s typically a **late-cycle tightening phase**
+ That’s typically a **late-cycle tightening phase**
 """)
 
 # -----------------------
@@ -200,7 +200,7 @@ When:
 
 with tab2:
 
-    st.header("🔮 Uranium Price Scenario Model")
+    st.header("Uranium Price Scenario Model")
 
     st.markdown("""
     Estimate future uranium price based on structural drivers:
@@ -232,7 +232,7 @@ with tab2:
     else:
         price = base_price * (1 + tightness * 1.2)
     
-    st.subheader("📊 Model Output")
+    st.subheader("Model Output")
 
     st.metric("Implied Uranium Price ($/lb)", f"{price:.2f}")
 
