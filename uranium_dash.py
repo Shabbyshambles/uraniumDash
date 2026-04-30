@@ -26,38 +26,88 @@ Tracks uranium equities, ETF proxies, and structural supply-demand signals.
 # -----------------------
 # UNIVERSE (KEY TICKERS)
 # -----------------------
-    tickers = {
-    "UUUU (Energy Fuels)": "UUUU",
-    "Cameco": "CCJ",
-    "NexGen": "NXE",
-    "Sprott Physical Uranium": "U.UN.TO",  # important proxy
-    "URNM ETF": "URNM"
+    miners = {
+        "UUUU": "UUUU",
+        "Cameco": "CCJ",
+        "NexGen": "NXE",
+        "Denison": "DNN",
+        "UEC": "UEC"
 }
+
+    reactors = {
+        "BWXT": "BWXT",
+        "Fluor": "FLR",
+        "NuScale": "SMR",
+        "GE": "GE"
+}
+    tickers = {
+        "BWXT" : "BWXT",
+        "Fluor" : "FLR",
+        "NuScale": "SMR",
+        "GE": "GE",
+        "UUUU": "UUUU",
+        "Cameco": "CCJ",
+        "NexGen": "NXE",
+        "Denison": "DNN",
+        "UEC": "UEC"
+    }
+    ticker = list(miners.values()) + list(reactors.values())
 
 # -----------------------
 # DATA LOADER
 # -----------------------
     @st.cache_data(ttl=3600)
-    def load_data(tickers):
-        data = yf.download(list(tickers.values()), period="2y")["Close"]
+    def load_data(ticker):
+        data = yf.download(ticker, period="2y")["Close"]
         return data
 
-    prices = load_data(tickers)
+    prices = load_data(ticker)
 
-# -----------------------
-# NORMALIZED PERFORMANCE
-# -----------------------
-    st.subheader("Uranium Equities Performance")
+###URANIUM MINERS GRAPH###
+    st.subheader("⛏️ Uranium Miners (Commodity Beta)")
 
-    fig = go.Figure()
+    fig_miners = go.Figure()
 
-    for name, tkr in tickers.items():
+    for name, tkr in miners.items():
         norm = prices[tkr] / prices[tkr].iloc[0]
-        fig.add_trace(go.Scatter(x=prices.index, y=norm, name=name))
+        fig_miners.add_trace(go.Scatter(
+            x=prices.index,
+            y=norm,
+            name=name
+    ))
 
-    fig.update_layout(height=500, width = 225, template="plotly_dark")
-    st.plotly_chart(fig, use_container_width=True)
+    fig_miners.update_layout(template="plotly_dark", height=400)
+    st.plotly_chart(fig_miners, use_container_width=True)
+# -----------------------REACTOR MANUFACTRERS###
+    st.subheader("⚛️ Nuclear Industrial / Reactor Plays")
 
+    fig_reactors = go.Figure()
+
+    for name, tkr in reactors.items():
+        norm = prices[tkr] / prices[tkr].iloc[0]
+        fig_reactors.add_trace(go.Scatter(
+            x=prices.index,
+            y=norm,
+            name=name
+    ))
+
+    fig_reactors.update_layout(template="plotly_dark", height=400)
+    st.plotly_chart(fig_reactors, use_container_width=True)
+
+
+
+    st.subheader("📊 Miners vs Reactors Ratio")
+
+    miners_index = prices[list(miners.values())].mean(axis=1)
+    reactors_index = prices[list(reactors.values())].mean(axis=1)
+
+    ratio = miners_index / reactors_index
+
+    fig_ratio = go.Figure()
+    fig_ratio.add_trace(go.Scatter(x=ratio.index, y=ratio, name="Miners / Reactors"))
+
+    fig_ratio.update_layout(template="plotly_dark")
+    st.plotly_chart(fig_ratio, use_container_width=True)
 # -----------------------
 # VOLATILITY REGIME
 # -----------------------
