@@ -3,7 +3,35 @@ import pandas as pd
 import yfinance as yf
 import plotly.graph_objects as go
 import numpy as np
+import feedparser
 
+st.cache_data(ttl=300)
+
+def get_rss_items(url, limit=5):
+    feed = feedparser.parse(url)
+    items = []
+    for entry in feed.entries[:limit]:
+        title = entry.title
+        link = entry.link
+        items.append(f'<a href="{link}" target="_blank">{title}</a>')
+    return items
+
+
+# RSS sources (you can expand this)
+feeds = [
+    "https://news.google.com/rss/search?q=uranium",
+    "https://news.google.com/rss/search?q=nuclear+energy",
+    "https://news.google.com/rss/search?q=gold+price",
+]
+
+all_items = []
+for f in feeds:
+    try:
+        all_items += get_rss_items(f, limit=3)
+    except:
+        pass
+
+ticker_text = "  •  ".join(all_items)
 # -----------------------
 # PAGE CONFIG
 # -----------------------
@@ -11,7 +39,43 @@ st.set_page_config(
     page_title="Uranium Macro Dashboard",
     layout="wide",
 )
+st.markdown(f"""
+<div style="
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    box-sizing: border-box;
+    border-bottom: 1px solid #333;
+    padding: 8px 0;
+">
+    <div style="
+        display: inline-block;
+        padding-left: 100%;
+        animation: scroll-left 40s linear infinite;
+    ">
+        {ticker_text}
+    </div>
+</div>
+
+<style>
+@keyframes scroll-left {{
+    0%   {{ transform: translateX(0); }}
+    100% {{ transform: translateX(-100%); }}
+}}
+
+a {{
+    color: #f5a623;
+    text-decoration: none;
+    margin-right: 40px;
+}}
+
+a:hover {{
+    text-decoration: underline;
+}}
+</style>
+""", unsafe_allow_html=True)
 tab1, tab2 = st.tabs(["Dashboard", "Price Model"])
+
 
 with tab1:
     # your existing dashboard code
